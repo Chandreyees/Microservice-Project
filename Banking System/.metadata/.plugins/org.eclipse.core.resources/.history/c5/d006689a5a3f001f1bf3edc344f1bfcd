@@ -1,0 +1,20 @@
+package com.customer.service;
+
+import java.util.List;
+
+import com.customer.model.CustomerRequest;
+import com.customer.model.CustomerResponse;
+
+public interface CustomerService {
+
+	List<CustomerResponse> getAllCustomers();
+
+	CustomerResponse addCustomer(CustomerRequest customer);
+
+	CustomerResponse getCustomerById(Long id);
+
+	void deleteCustomer(Long id);
+
+	CustomerResponse updateCustomer(Long id, CustomerRequest customer);
+
+}

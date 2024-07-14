@@ -1,0 +1,42 @@
+package com.account.service;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.account.dao.AccountModel;
+import com.account.dao.ApiResponseModel;
+@Service
+public class AccountServiceImpl implements AccountService{
+
+	@Override
+	public AccountModel getAccountDetails(Long id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ApiResponseModel addMoneyToAccount(Long customerId, double amount) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public AccountModel withdrawMoneyFromAccount(Long customerId, double amount) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<AccountModel> getAllAccounts() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ApiResponseModel deleteAccount(Long id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

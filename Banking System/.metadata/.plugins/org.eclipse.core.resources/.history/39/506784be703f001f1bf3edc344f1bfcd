@@ -1,0 +1,72 @@
+package com.account.service;
+
+import java.util.List;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+
+import com.account.dao.AccountModel;
+import com.account.dao.ApiResponseModel;
+import com.account.dao.CustomerDao;
+import com.account.entity.AccountEntity;
+import com.account.exception.CustomerNotFoundException;
+import com.account.exception.ResourceNotFoundException;
+import com.account.repository.AccountRepository;
+@Service
+public class AccountServiceImpl implements AccountService{
+	
+	@Autowired
+    private AccountRepository accountRepository;
+
+    @Autowired
+    private CustomerClient customerClient;
+
+	@Override
+	public AccountModel getAccountDetails(Long id) {
+		 return accountRepository.findById(id).map(this::convertToModel)
+	                .orElseThrow(() -> new AccountNotFoundException("Account not found with id: " + accountId));
+	}
+
+	@Override
+	public ApiResponseModel addMoneyToAccount(Long customerId, double amount) {
+		 CustomerDao customer = customerClient.getCustomerById(customerId);
+	        if (customer == null) {
+	            throw new CustomerNotFoundException("Customer not found with id: " + customerId);
+	        }
+
+	        AccountEntity account = accountRepository.findByCustomerId(customerId);
+	        if (account == null) {
+	            throw new ResourceNotFoundException("Account not found for customer id: " + customerId);
+	        }
+
+	        account.setBalance(account.getBalance() + amount);
+	        accountRepository.save(account);
+	        return ApiResponseModel.builder().message("Balance Added").success(true).status(HttpStatus.OK).build();
+	}
+
+	@Override
+	public AccountModel withdrawMoneyFromAccount(Long customerId, double amount) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<AccountModel> getAllAccounts() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ApiResponseModel deleteAccount(Long id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	private AccountModel convertToModel(AccountEntity entity) {
+		return AccountModel.builder().accountNumber(entity.getAccountNumber()).balance(entity.getBalance())
+				.customerId(entity.getCustomerId()).build();
+	}
+
+}

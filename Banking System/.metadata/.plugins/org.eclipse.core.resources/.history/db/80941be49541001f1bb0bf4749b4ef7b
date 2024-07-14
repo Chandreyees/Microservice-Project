@@ -1,0 +1,13 @@
+package com.account.dao;
+
+import lombok.Builder;
+import lombok.Data;
+
+@Data
+@Builder
+public class AddMoneyModel {
+
+	private Long customerId;
+	private Double balance;
+	private String accountNumber;
+}

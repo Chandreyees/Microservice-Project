@@ -1,0 +1,12 @@
+package com.account.model;
+
+import com.account.dao.CustomerDao;
+
+public class CustomerClient {
+
+	public CustomerDao getCustomerById(Long customerId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

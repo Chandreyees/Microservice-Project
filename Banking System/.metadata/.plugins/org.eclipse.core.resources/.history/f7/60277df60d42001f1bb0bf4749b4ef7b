@@ -1,0 +1,8 @@
+package com.customer.external.service;
+
+import org.springframework.cloud.openfeign.FeignClient;
+
+@FeignClient(name="ACCOUNT-SERVICE")
+public interface AccountService {
+
+}

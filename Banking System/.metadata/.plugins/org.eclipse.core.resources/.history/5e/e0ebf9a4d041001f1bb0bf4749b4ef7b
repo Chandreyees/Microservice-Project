@@ -1,0 +1,15 @@
+package com.account.dao;
+
+import lombok.Builder;
+import lombok.Data;
+
+@Data
+@Builder
+public class CustomerDao {
+
+	private Long id;
+	private String name;
+	private String email;
+	private String phoneNumber;
+
+}

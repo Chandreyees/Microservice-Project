@@ -1,0 +1,109 @@
+package com.account.service;
+
+import java.util.List;
+import java.util.Objects;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+
+import com.account.dao.AccountModel;
+import com.account.dao.ApiResponseModel;
+import com.account.dao.CustomerDao;
+import com.account.entity.AccountEntity;
+import com.account.exception.CustomerNotFoundException;
+import com.account.exception.ResourceNotFoundException;
+import com.account.repository.AccountRepository;
+@Service
+public class AccountServiceImpl implements AccountService{
+	
+	@Autowired
+    private AccountRepository accountRepository;
+
+//    @Autowired
+//    private CustomerClient customerClient;
+
+	@Override
+	public AccountModel getAccountDetails(Long id) {
+		 return accountRepository.findById(id).map(this::convertToModel)
+	                .orElseThrow(() -> new ResourceNotFoundException("Account not found with id: " + id));
+	}
+
+	@Override
+	public ApiResponseModel addMoneyToAccount(Long customerId, double amount) {
+//		 CustomerDao customer = customerClient.getCustomerById(customerId);
+//	        if (Objects.isNull(customer)) {
+//	            throw new CustomerNotFoundException("Customer not found with id: " + customerId);
+//	        }
+
+	        AccountEntity account = accountRepository.findByCustomerId(customerId);
+	        if (Objects.isNull(account)) {
+	            throw new ResourceNotFoundException("Account not found for customer id: " + customerId);
+	        }
+
+	        account.setBalance(account.getBalance() + amount);
+	        accountRepository.save(account);
+	        return ApiResponseModel.builder().message("Balance Added").success(true).status(HttpStatus.OK).build();
+	}
+
+	@Override
+	public AccountModel withdrawMoneyFromAccount(Long customerId, double amount) {
+//		CustomerDao customer = customerClient.getCustomerById(customerId);
+//        if (Objects.isNull(customer)) {
+//            throw new CustomerNotFoundException("Customer not found with id: " + customerId);
+//        }
+
+        AccountEntity account = accountRepository.findByCustomerId(customerId);
+        if (Objects.isNull(account)) {
+            throw new ResourceNotFoundException("Account not found for customer id: " + customerId);
+        }
+
+        if (account.getBalance() < amount) {
+            throw new RuntimeException("Insufficient balance");
+        }
+
+        account.setBalance(account.getBalance() - amount);
+        accountRepository.save(account);
+        return convertToModel(account);
+	}
+
+	@Override
+	public List<AccountModel> getAllAccounts() {
+		return accountRepository.findAll().stream().map(this::convertToModel).toList();
+	}
+
+	@Override
+	public ApiResponseModel deleteAccount(Long accountId) {
+		 if (!accountRepository.existsById(accountId)) {
+	            throw new ResourceNotFoundException("Account not found with id: " + accountId);
+	        }
+	        accountRepository.deleteById(accountId);
+	        return ApiResponseModel.builder().message("Account Deleted").success(true).status(HttpStatus.OK).build();
+	}
+	
+	private AccountModel convertToModel(AccountEntity entity) {
+		return AccountModel.builder().accountNumber(entity.getAccountNumber()).balance(entity.getBalance())
+				.customerId(entity.getCustomerId()).build();
+	}
+
+	@Override
+	public AccountModel createAccountForCustomer(Long customerId, AccountModel accountModel) {
+//		CustomerDao customer = customerService.getCustomerById(customerId)
+//                .orElseThrow(() -> new RuntimeException("Customer not found"));
+
+        // Set customer details in account model
+        accountModel.setCustomerId(customerId);
+
+        // Save account model to the repository
+        AccountEntity account = new AccountEntity();
+        account.setCustomerId(accountModel.getCustomerId());
+        account.setBalance(accountModel.getBalance());
+        account.setAccountType(accountModel.getAccountType());
+        account.setAccountNumber(accountModel.getAccountNumber());
+
+        AccountEntity savedAccount = accountRepository.save(account);
+        return convertToModel(savedAccount);
+
+	}
+
+}

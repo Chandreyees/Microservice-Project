@@ -1,0 +1,8 @@
+package com.customer.exceptions;
+
+public class ResourceNotFoundException extends RuntimeException {
+	public ResourceNotFound(String message) {
+        super(message);
+    }
+
+}

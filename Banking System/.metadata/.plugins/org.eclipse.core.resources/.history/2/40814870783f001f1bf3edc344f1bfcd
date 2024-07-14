@@ -1,0 +1,8 @@
+package com.account.dao;
+
+public class AddMoneyModel {
+
+	private Long customerId;
+	private Double balance;
+	private String accountNumber;
+}

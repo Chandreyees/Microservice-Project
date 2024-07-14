@@ -1,0 +1,15 @@
+package com.customer.external.service;
+
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import com.customer.model.ApiResponseModel;
+
+@FeignClient(name="ACCOUNT-SERVICE")
+public interface AccountService {
+	
+	@DeleteMapping("/{customerId}")
+	ApiResponseModel deleteAccount(@PathVariable Long customerId);
+
+}

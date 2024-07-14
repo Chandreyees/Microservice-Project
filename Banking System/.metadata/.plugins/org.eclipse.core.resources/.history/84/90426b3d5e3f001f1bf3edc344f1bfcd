@@ -1,0 +1,54 @@
+package com.customer.controller;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.customer.model.CustomerRequest;
+import com.customer.model.CustomerResponse;
+import com.customer.service.CustomerService;
+
+@RestController
+@RequestMapping("/customers")
+public class CustomerController {
+	
+	@Autowired
+    private CustomerService customerService;
+
+    @GetMapping
+    public List<CustomerResponse> getAllCustomers() {
+        return customerService.getAllCustomers();
+    }
+
+    @PostMapping
+    public CustomerResponse addCustomer(@RequestBody CustomerRequest customer) {
+        return customerService.addCustomer(customer);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CustomerResponse> getCustomerById(@PathVariable Long id) {
+        CustomerResponse customer = customerService.getCustomerById(id);
+        return ResponseEntity.ok(customer);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<CustomerResponse> updateCustomer(@PathVariable Long id, @RequestBody CustomerRequest customer) {
+    	CustomerResponse updatedCustomer = customerService.updateCustomer(id, customer);
+        return ResponseEntity.ok(updatedCustomer);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteCustomer(@PathVariable Long id) {
+        customerService.deleteCustomer(id);
+        return ResponseEntity.noContent().build();
+    }
+
+}

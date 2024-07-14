@@ -1,0 +1,24 @@
+package com.account.config;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class CustomFeignErrorDecoder implements ErrorDecoder {
+
+    private final ErrorDecoder defaultErrorDecoder = new Default();
+
+    @Override
+    public Exception decode(String methodKey, Response response) {
+        if (response.status() == HttpStatus.NOT_FOUND.value()) {
+            return new CustomerNotFoundException("Customer not found with id: " + extractCustomerIdFromPath(response.request().url()));
+        }
+        return defaultErrorDecoder.decode(methodKey, response);
+    }
+
+    private Long extractCustomerIdFromPath(String url) {
+        // Logic to extract customer id from the URL, assuming the customer id is part of the URL path
+        // For example, extracting '511' from 'http://CUSTOMER-SERVICE/customers/511'
+        String[] parts = url.split("/");
+        return Long.valueOf(parts[parts.length - 1]);
+    }
+}
